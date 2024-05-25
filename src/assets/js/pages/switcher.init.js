@@ -6,14 +6,14 @@ function toggleSwitcher() {
 }
 function setColor(t) {
   (document.getElementById("bootstrap-style").href =
-    "assets/css/bootstrap-" + t + ".min.css"),
+    "@/assets/css/bootstrap-" + t + ".min.css"),
     (document.getElementById("app-style").href =
-      "assets/css/app-" + t + ".min.css");
+      "@/assets/css/app-" + t + ".min.css");
 }
 function setColorGreen() {
   (document.getElementById("bootstrap-style").href =
-    "assets/css/bootstrap.min.css"),
-    (document.getElementById("app-style").href = "assets/css/app.min.css");
+    "@/assets/css/bootstrap.min.css"),
+    (document.getElementById("app-style").href = "@/assets/css/app.min.css");
 }
 var btn = document.getElementById("mode");
 btn.addEventListener("click", function (t) {
