@@ -1,5 +1,5 @@
 <template>
-  <SignWrapped>
+  <SignWrapped :imgUrl="require('@/assets/images/auth/sign-up.png')">
     <template #formAuthUp>
       <FormAuthUp />
     </template>
