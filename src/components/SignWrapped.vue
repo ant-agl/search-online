@@ -34,8 +34,7 @@
                     <!--end col-->
                     <div class="col-lg-6">
                       <div class="auth-content card-body p-5 text-white">
-                        <slot name="formAuthUp"></slot>
-                        <slot name="formAuthIn"></slot>
+                        <slot name="formaUser"></slot>
                       </div>
                     </div>
                     <!--end col-->
@@ -66,10 +65,16 @@ export default {
   props: {
     imgUrl: {
       type: String,
-      validate(val) {
-        console.log(val + "  " + "sas");
-      },
     },
   },
 };
 </script>
+
+<style scoped>
+@media screen and (min-width: 995px) {
+  .card,
+  .col-lg-6 {
+    height: 100% !important;
+  }
+}
+</style>

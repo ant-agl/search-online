@@ -1,18 +1,21 @@
 <template>
-  <SignWrapped :imgUrl="require('@/assets/images/auth/sign-up.png')">
+  <SignWrapped :imgUrl="require('@/assets/images/auth/reset-password.png')">
     <template #formaUser>
-      <FormAuthUp />
+      <FormEnterCode />
     </template>
   </SignWrapped>
 </template>
 
 <script>
 import SignWrapped from "@/components/SignWrapped.vue";
-import FormAuthUp from "@/components/FormAuthUp";
+import FormEnterCode from "@/components/FormEnterCode.vue";
 export default {
   components: {
     SignWrapped,
-    FormAuthUp,
+    FormEnterCode,
+  },
+  data() {
+    return {};
   },
 };
 </script>

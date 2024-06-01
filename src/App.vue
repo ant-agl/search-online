@@ -1,6 +1,7 @@
 <template>
   <AppTheme />
   <router-view />
+  <div class="d">Посмотри Роуты</div>
 </template>
 
 <script>
@@ -11,4 +12,8 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.d {
+  font-size: 60px;
+}
+</style>

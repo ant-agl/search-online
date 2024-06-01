@@ -4,27 +4,21 @@
       <h5>Welcome Back !</h5>
       <p class="text-white-70">Sign in to continue to Jobcy.</p>
     </div>
-    <form action="index.html" class="auth-form">
+    <form @submit.prevent="onSubmit" class="auth-form">
       <div class="mb-3">
-        <label for="usernameInput" class="form-label">Username</label>
-        <input
-          v-model="login"
-          type="text"
-          class="form-control"
-          id="usernameInput"
+        <AppInput
+          v-model:value="v.emailField.$model"
           placeholder="Enter your username"
-          required
+          label="Email"
+          :errors="v.emailField.$errors"
         />
       </div>
       <div class="mb-3">
-        <label for="passwordInput" class="form-label">Password</label>
-        <input
-          v-model="password"
-          type="password"
-          class="form-control"
-          id="passwordInput"
+        <AppInput
+          v-model:value="v.passwordlField.$model"
           placeholder="Enter your password"
-          required
+          label="Password"
+          :errors="v.passwordlField.$errors"
         />
       </div>
       <div class="mb-4">
@@ -34,9 +28,10 @@
             type="checkbox"
             id="flexCheckDefault"
           />
-          <a href="reset-password.html" class="float-end text-white"
-            >Forgot Password?</a
-          >
+          <router-link to="/ResetPasswordView" class="float-end text-white">
+            Forgot Password?
+          </router-link>
+
           <label class="form-check-label" for="flexCheckDefault"
             >Remember me</label
           >
@@ -49,29 +44,67 @@
     <div class="mt-4 text-center">
       <p class="mb-0">
         Don't have an account ?
-        <a
-          href="sign-up.html"
+        <router-link
+          to="SignUpView"
           class="fw-medium text-white text-decoration-underline"
         >
           Sign Up
-        </a>
+        </router-link>
       </p>
     </div>
+    <span class="badge bg-soft-info" v-if="errorMessage">{{
+      errorMessage
+    }}</span>
   </div>
 </template>
-<script>
+<script setup>
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { minLength, helpers, email, required } from "@vuelidate/validators";
+import AppInput from "@/components/App/AppInput";
 import AppButton from "@/components/App/AppButton";
-export default {
-  name: "FormAuthIn",
-  components: {
-    AppButton,
+
+const store = useStore();
+
+const emailField = ref("");
+const passwordlField = ref("");
+const errorMessage = ref("");
+const rules = computed(() => ({
+  emailField: {
+    email: helpers.withMessage("Вы ввели неверный email", email),
+    required: helpers.withMessage("Вы должны написать email", required),
   },
-  data() {
-    return {
-      login: "",
-      password: "",
-    };
+  passwordlField: {
+    minLength: helpers.withMessage(
+      "Минимальная длина 8 символов",
+      minLength(8)
+    ),
+    required: helpers.withMessage("Вы должны написать пароль", required),
   },
+}));
+const v = useVuelidate(rules, {
+  emailField,
+  passwordlField,
+});
+
+const onSubmit = async () => {
+  v.value.$touch();
+
+  if (!v.value.$invalid) {
+    try {
+      errorMessage.value = "";
+      const data = {
+        email: emailField.value,
+        password: passwordlField.value,
+      };
+      await store.dispatch("login", data);
+
+      // router.push("/CheckAuth");
+    } catch (error) {
+      errorMessage.value = error.response.data.detail;
+    }
+  }
 };
 </script>
 <style scoped>

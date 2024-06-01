@@ -1,5 +1,5 @@
 <template>
-  <button type="submit" :class="classBtn">
+  <button :type="type" :class="classBtn">
     <slot></slot>
   </button>
 </template>
@@ -10,6 +10,10 @@ export default {
     classBtn: {
       type: String,
       default: "btn btn-white btn-hover w-100",
+    },
+    type: {
+      type: String,
+      default: "submit",
     },
   },
 };

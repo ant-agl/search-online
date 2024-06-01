@@ -1,100 +1,75 @@
 <template>
   <div>
-    <input
-      :type="inputType"
-      class="form-control"
-      :value="modelValue"
-      @input="onInput"
-      @blur="validate"
-      v-bind="$attrs"
-    />
-
-    <div class="alert bg-soft-danger" role="alert" v-if="errorMessage">
-      {{ errorMessage }}
-    </div>
+    <label :style="{ width: width }">
+      {{ label }} <slot></slot>
+      <input
+        :class="classProps"
+        :type="type"
+        :value="value"
+        :placeholder="placeholder"
+        :checked="checked"
+        @input="updateValue"
+        @change="updateChecked"
+      />
+    </label>
+    <TransitionGroup>
+      <div v-for="error of errors" :key="error.$uid">
+        <!-- <div class="red">
+          {{ error.$message }}
+        </div> -->
+        <span class="badge bg-soft-info">{{ error.$message }}</span>
+      </div>
+    </TransitionGroup>
   </div>
 </template>
-
-<script>
-export default {
-  name: "AppInput",
-  props: {
-    modelValue: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-      validator: function (value) {
-        return ["username", "email", "password"].includes(value);
-      },
-    },
-  },
-  data() {
-    return {
-      errorMessage: "",
-    };
-  },
-  computed: {
-    inputType() {
-      return this.type === "password" ? "password" : "text";
-    },
-  },
-  methods: {
-    async onInput(event) {
-      this.$emit("update:modelValue", event.target.value);
-      this.errorMessage = "";
-    },
-    async validate() {
-      const value = this.modelValue;
-      if (this.type === "username") {
-        await this.validateUsername(value);
-      } else if (this.type === "email") {
-        this.validateEmail(value);
-      } else if (this.type === "password") {
-        this.validatePassword(value);
-      }
-    },
-    async validateUsername(username) {
-      if (!username) {
-        this.errorMessage = "Username is required";
-        return;
-      }
-      // Проверка логина через сервер
-      try {
-        const response = await fetch("");
-        const result = await response.json();
-        if (!result.valid) {
-          this.errorMessage = "Username is already taken";
-        }
-      } catch (error) {
-        this.errorMessage = "Error validating username";
-      }
-    },
-    validateEmail(email) {
-      const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-      if (!email) {
-        this.errorMessage = "Email is required";
-      } else if (!emailPattern.test(email)) {
-        this.errorMessage = "Invalid email format";
-      }
-    },
-    validatePassword(password) {
-      if (!password) {
-        this.errorMessage = "Password is required";
-      } else if (password.length < 6) {
-        this.errorMessage = "Password must be at least 6 characters long";
-      }
-    },
-  },
-};
-</script>
-
 <style scoped>
-.error-message {
-  color: red;
-  font-size: 12px;
-  margin-top: 4px;
+.red {
+  color: brown;
 }
 </style>
+<script setup>
+const emit = defineEmits(["update:value", "update:checked"]);
+const props = defineProps({
+  errors: {
+    type: Array,
+    required: false,
+  },
+
+  classProps: {
+    type: String,
+    default: "form-control",
+  },
+  checked: {
+    type: Boolean,
+    default: false,
+  },
+  value: {
+    type: String,
+    default: "",
+  },
+  width: {
+    type: String,
+    default: "100%",
+  },
+  placeholder: {
+    type: String,
+  },
+
+  type: {
+    type: String,
+    default: "text",
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+});
+const updateValue = (e) => {
+  emit("update:value", e.target.value);
+};
+const updateChecked = (e) => {
+  if (props.type === "checkbox") {
+    emit("update:checked", e.target.checked);
+  }
+};
+</script>
