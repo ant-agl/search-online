@@ -3,8 +3,8 @@
     <label :style="{ width: width }">
       {{ label }} <slot></slot>
       <input
-        :class="classProps"
         :type="type"
+        :class="inputClass"
         :value="value"
         :placeholder="placeholder"
         :checked="checked"
@@ -12,22 +12,26 @@
         @change="updateChecked"
       />
     </label>
-    <TransitionGroup>
+    <TransitionGroup name="list">
       <div v-for="error of errors" :key="error.$uid">
-        <!-- <div class="red">
-          {{ error.$message }}
-        </div> -->
-        <span class="badge bg-soft-info">{{ error.$message }}</span>
+        <span class="badge bg-danger">{{ error.$message }}</span>
       </div>
     </TransitionGroup>
   </div>
 </template>
 <style scoped>
-.red {
-  color: brown;
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.7s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
 <script setup>
+import { defineProps, defineEmits, toRefs } from "vue";
 const emit = defineEmits(["update:value", "update:checked"]);
 const props = defineProps({
   errors: {
@@ -35,7 +39,7 @@ const props = defineProps({
     required: false,
   },
 
-  classProps: {
+  class: {
     type: String,
     default: "form-control",
   },
@@ -64,6 +68,7 @@ const props = defineProps({
     required: true,
   },
 });
+const { class: inputClass } = toRefs(props);
 const updateValue = (e) => {
   emit("update:value", e.target.value);
 };

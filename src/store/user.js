@@ -10,7 +10,8 @@ export default {
   getters: { userData: (s) => s.userData },
   mutations: {},
   actions: {
-    async registrationUserData(data) {
+    async registrationUserData(context, data) {
+      console.log(data);
       return api
         .post("/registration", data)
         .then((response) => {
@@ -23,7 +24,7 @@ export default {
           return Promise.reject(error);
         });
     },
-    async authActivate(data) {
+    async authActivate(context, data) {
       console.log(data);
       return api
         .post("/registration/activate", data)
@@ -37,7 +38,7 @@ export default {
           return Promise.reject(error);
         });
     },
-    async userResetPassword(data) {
+    async userResetPassword(context, data) {
       console.log(data);
       return api
         .post("/registration/recover_password_query", data)
@@ -51,7 +52,7 @@ export default {
           return Promise.reject(error);
         });
     },
-    async userRecoverPassword(data) {
+    async userRecoverPassword(context, data) {
       console.log(data);
       return api
         .post("/registration/recover_password", data)
@@ -65,7 +66,7 @@ export default {
           return Promise.reject(error);
         });
     },
-    async login(data) {
+    async login(context, data) {
       console.log(data);
       return api
         .post("/login", data)

@@ -1,7 +1,6 @@
 <template>
   <AppTheme />
   <router-view />
-  <div class="d">Посмотри Роуты</div>
 </template>
 
 <script>

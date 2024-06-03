@@ -1,9 +1,9 @@
 <template>
   <div class="w-100">
     <div class="text-center">
-      <h5>Let's Get Started</h5>
+      <h5>Давайте начнем</h5>
       <p class="text-white-70">
-        Sign Up and get access to all the features of Jobcy
+        Зарегистрируйтесь и получите доступ ко всем функциям Jobcy.
       </p>
     </div>
     <form @submit.prevent="onSubmit" class="auth-form">
@@ -12,8 +12,8 @@
           v-model:value="v.login.$model"
           :errors="v.login.$errors"
           type="text"
-          placeholder="Enter your username"
-          label="Username"
+          placeholder="Введите логин"
+          label="Логин"
         />
       </div>
       <div class="mb-3">
@@ -21,17 +21,17 @@
           v-model:value="v.emailField.$model"
           :errors="v.emailField.$errors"
           type="email"
-          placeholder="Enter your email"
-          label="Email"
+          placeholder="Введите электронную почту"
+          label="Электронная почта"
         />
       </div>
       <div class="mb-3">
         <AppInput
-          v-model:value="v.passwordlField.$model"
-          :errors="v.passwordlField.$errors"
+          v-model:value="v.passwordField.$model"
+          :errors="v.passwordField.$errors"
           type="password"
-          placeholder="Enter your password"
-          label="Password"
+          placeholder="Введите пароль"
+          label="Пароль"
         />
       </div>
       <div class="mb-4">
@@ -41,36 +41,32 @@
             class="form-check-input"
             type="checkbox"
             v-model:checked="v.checkField.$model"
-            label="I agree to the"
+            label="я согласен"
           >
-            <a
-              href="javascript:void(0)"
-              class="text-white text-decoration-underline"
-            >
-              Terms and conditions
-            </a>
+            <router-link to="#" class="text-white text-decoration-underline">
+              Условия и положения
+            </router-link>
           </AppInput>
         </div>
       </div>
       <div class="text-center">
-        <AppButton>Sign Up</AppButton>
+        <AppButton>Зарегистрироваться</AppButton>
       </div>
     </form>
     <div class="mt-3 text-center">
       <p class="mb-0">
-        Already a member?
+        Уже зарегистрировались?
         <router-link
           to="/SignInView"
           class="fw-medium text-white text-decoration-underline"
         >
-          Sign In</router-link
+          Войти</router-link
         >
-        <!-- <a href="sign-in.html"> </a> -->
       </p>
     </div>
-    <span class="badge bg-soft-info" v-if="errorMessage">{{
-      errorMessage
-    }}</span>
+    <AppError v-if="errorMessage">
+      {{ errorMessage }}
+    </AppError>
   </div>
 </template>
 
@@ -78,15 +74,22 @@
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 import useVuelidate from "@vuelidate/core";
-import { minLength, helpers, email, required } from "@vuelidate/validators";
+import {
+  minLength,
+  helpers,
+  email,
+  required,
+  sameAs,
+} from "@vuelidate/validators";
 import AppInput from "@/components/App/AppInput";
 import AppButton from "@/components/App/AppButton";
+import AppError from "@/components/App/AppError";
 import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 const login = ref("");
 const emailField = ref("");
-const passwordlField = ref("");
+const passwordField = ref("");
 const checkField = ref(false);
 const errorMessage = ref("");
 const rules = computed(() => ({
@@ -101,7 +104,7 @@ const rules = computed(() => ({
     email: helpers.withMessage("Вы ввели неверный email", email),
     required: helpers.withMessage("Вы должны написать email", required),
   },
-  passwordlField: {
+  passwordField: {
     minLength: helpers.withMessage(
       "Минимальная длина 8 символов",
       minLength(8)
@@ -109,13 +112,16 @@ const rules = computed(() => ({
     required: helpers.withMessage("Вы должны написать пароль", required),
   },
   checkField: {
-    required: helpers.withMessage("Вы должны принять условия", required),
+    sameAsRawValue: helpers.withMessage(
+      "Вы должны принять условия",
+      sameAs(true)
+    ),
   },
 }));
 const v = useVuelidate(rules, {
   login,
   emailField,
-  passwordlField,
+  passwordField,
   checkField,
 });
 
@@ -126,13 +132,13 @@ const onSubmit = async () => {
     try {
       errorMessage.value = "";
       const data = {
-        name: login.value,
-        email: emailField.value,
-        password: passwordlField.value,
+        name: login.value.trim(),
+        email: emailField.value.trim(),
+        password: passwordField.value.trim(),
       };
       await store.dispatch("registrationUserData", data);
 
-      router.push("/CheckAuth");
+      router.push("/CheckCode");
     } catch (error) {
       errorMessage.value = error.response.data.detail;
     }

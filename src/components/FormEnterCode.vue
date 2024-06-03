@@ -13,17 +13,17 @@
         <AppInput
           type="text"
           v-model:value="v.codeField.$model"
-          placeholder="Enter your code"
+          placeholder="Введите код"
           :label="resetPassword ? 'Код восстановления' : 'Код активации'"
           :errors="v.codeField.$errors"
         />
       </div>
 
-      <AppButton>Send</AppButton>
+      <AppButton>Отправить</AppButton>
     </form>
-    <span class="badge bg-soft-info" v-if="errorMessage">{{
-      errorMessage
-    }}</span>
+    <AppError v-if="errorMessage">
+      {{ errorMessage }}
+    </AppError>
   </div>
 </template>
 
@@ -31,9 +31,10 @@
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 import useVuelidate from "@vuelidate/core";
-import { minLength, helpers, required } from "@vuelidate/validators";
+import { helpers, required } from "@vuelidate/validators";
 import AppInput from "@/components/App/AppInput";
 import AppButton from "@/components/App/AppButton";
+import AppError from "@/components/App/AppError";
 import { useRouter, useRoute } from "vue-router";
 
 const store = useStore();
@@ -44,10 +45,6 @@ const errorMessage = ref("");
 const codeField = ref("");
 const rules = computed(() => ({
   codeField: {
-    minLength: helpers.withMessage(
-      "Код должен состоять из 24 символов",
-      minLength(24)
-    ),
     required: helpers.withMessage("Вставьте код", required),
   },
 }));

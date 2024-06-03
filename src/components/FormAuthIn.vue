@@ -1,60 +1,59 @@
 <template>
   <div class="w-100">
     <div class="text-center mb-6">
-      <h5>Welcome Back !</h5>
-      <p class="text-white-70">Sign in to continue to Jobcy.</p>
+      <h5>Добро пожаловать !</h5>
+      <p class="text-white-70">Войдите, чтобы продолжить работу с Jobcy.</p>
     </div>
     <form @submit.prevent="onSubmit" class="auth-form">
       <div class="mb-3">
         <AppInput
           v-model:value="v.emailField.$model"
-          placeholder="Enter your username"
-          label="Email"
+          placeholder="Введите вашу электронную почту"
+          label="Электронная почта"
+          type="email"
           :errors="v.emailField.$errors"
         />
       </div>
       <div class="mb-3">
         <AppInput
-          v-model:value="v.passwordlField.$model"
-          placeholder="Enter your password"
-          label="Password"
-          :errors="v.passwordlField.$errors"
+          v-model:value="v.passwordField.$model"
+          placeholder="Введите ваш пароль"
+          label="Пароль"
+          type="password"
+          :errors="v.passwordField.$errors"
         />
       </div>
       <div class="mb-4">
         <div class="form-check">
-          <input
+          <AppInput
             class="form-check-input"
             type="checkbox"
-            id="flexCheckDefault"
-          />
-          <router-link to="/ResetPasswordView" class="float-end text-white">
-            Forgot Password?
-          </router-link>
-
-          <label class="form-check-label" for="flexCheckDefault"
-            >Remember me</label
+            label="Запомнить меня"
+            v-model:checked="checkbox"
+            ><router-link to="/ResetPasswordView" class="float-end text-white">
+              Забыли пароль?
+            </router-link></AppInput
           >
         </div>
       </div>
       <div class="text-center">
-        <AppButton> Sign In </AppButton>
+        <AppButton> Войти</AppButton>
       </div>
     </form>
     <div class="mt-4 text-center">
       <p class="mb-0">
-        Don't have an account ?
+        У вас нет учетной записи?
         <router-link
           to="SignUpView"
           class="fw-medium text-white text-decoration-underline"
         >
-          Sign Up
+          Зарегистрироваться
         </router-link>
       </p>
     </div>
-    <span class="badge bg-soft-info" v-if="errorMessage">{{
-      errorMessage
-    }}</span>
+    <AppError v-if="errorMessage">
+      {{ errorMessage }}
+    </AppError>
   </div>
 </template>
 <script setup>
@@ -64,18 +63,20 @@ import useVuelidate from "@vuelidate/core";
 import { minLength, helpers, email, required } from "@vuelidate/validators";
 import AppInput from "@/components/App/AppInput";
 import AppButton from "@/components/App/AppButton";
+import AppError from "@/components/App/AppError";
 
 const store = useStore();
 
-const emailField = ref("");
-const passwordlField = ref("");
+const emailField = ref(localStorage.getItem("email") || "");
+const passwordField = ref(localStorage.getItem("password") || "");
 const errorMessage = ref("");
+const checkbox = ref(false);
 const rules = computed(() => ({
   emailField: {
     email: helpers.withMessage("Вы ввели неверный email", email),
     required: helpers.withMessage("Вы должны написать email", required),
   },
-  passwordlField: {
+  passwordField: {
     minLength: helpers.withMessage(
       "Минимальная длина 8 символов",
       minLength(8)
@@ -85,21 +86,24 @@ const rules = computed(() => ({
 }));
 const v = useVuelidate(rules, {
   emailField,
-  passwordlField,
+  passwordField,
 });
 
 const onSubmit = async () => {
   v.value.$touch();
-
+  console.log(checkbox.value);
   if (!v.value.$invalid) {
     try {
       errorMessage.value = "";
       const data = {
-        email: emailField.value,
-        password: passwordlField.value,
+        email: emailField.value.trim(),
+        password: passwordField.value.trim(),
       };
       await store.dispatch("login", data);
-
+      if (checkbox.value) {
+        localStorage.setItem("email", emailField.value.trim());
+        localStorage.setItem("password", passwordField.value.trim());
+      }
       // router.push("/CheckAuth");
     } catch (error) {
       errorMessage.value = error.response.data.detail;

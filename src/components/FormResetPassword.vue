@@ -1,53 +1,55 @@
 <template>
   <div class="text-center mb-4">
-    <h5>Reset Password</h5>
-    <p class="text-white-50">Reset your password with Jobcy.</p>
+    <h5>Сброс пароля</h5>
+    <p class="text-white-50">Сбросьте пароль с помощью Jobcy.</p>
   </div>
 
   <form @submit.prevent="onSubmit" class="auth-form text-white">
     <div class="alert alert-warning text-center mb-4" role="alert">
-      Enter your Email and instructions will be sent to you!
+      Введите свой адрес электронной почты и вы получите инструкцию для
+      восстановления!
     </div>
     <div class="mb-4">
       <AppInput
         type="email"
-        placeholder="Enter username or email"
+        placeholder="Введите адресс электронной почты"
         v-model:value="v.emailField.$model"
-        label="Email"
+        label="Электронная почта"
         :errors="v.emailField.$errors"
       />
     </div>
     <div class="mt-3">
-      <AppButton>Send Request</AppButton>
+      <AppButton>Отправить</AppButton>
     </div>
   </form>
 
   <div class="mt-5 text-center text-white-50">
     <p>
-      Remembered It ?
-      <a
-        href="sign-in.html"
+      Вспомнили пароль?
+      <router-link
+        to="/SignInView"
         class="fw-medium text-white text-decoration-underline"
       >
-        Go to Login
-      </a>
+        Войти
+      </router-link>
     </p>
-    <span class="badge bg-soft-info" v-if="errorMessage">{{
-      errorMessage
-    }}</span>
-    <router-link to="/CheckAuth/resetPassword=true">as</router-link>
+    <AppError v-if="errorMessage">
+      {{ errorMessage }}
+    </AppError>
   </div>
 </template>
 <script setup>
 import AppButton from "@/components/App/AppButton";
 import AppInput from "@/components/App/AppInput";
+import AppError from "@/components/App/AppError";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 const store = useStore();
 const emailField = ref("");
-
+const router = useRouter();
 const errorMessage = ref("");
 const rules = computed(() => ({
   emailField: {
@@ -65,6 +67,7 @@ const onSubmit = async () => {
       await store.dispatch("userResetPassword", {
         email: emailField.value.trim(),
       });
+      router.push("/CheckCode/resetPassword=true");
     } catch (error) {
       errorMessage.value = error.response.data.detail;
     }

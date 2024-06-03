@@ -14,7 +14,7 @@
                   <div class="row align-items-center">
                     <div class="col-lg-6 text-center">
                       <div class="card-body p-4">
-                        <a href="index.html">
+                        <router-link to="/">
                           <img
                             src="@/assets/images/logo-light.png"
                             alt=""
@@ -25,7 +25,8 @@
                             alt=""
                             class="logo-dark"
                           />
-                        </a>
+                        </router-link>
+
                         <div class="mt-5">
                           <img :src="imgUrl" alt="" class="img-fluid" />
                         </div>

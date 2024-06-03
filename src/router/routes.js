@@ -1,5 +1,15 @@
 const routes = [
   {
+    path: "/",
+    name: "StartPage",
+    meta: {
+      titleKey: "StartPage",
+      layout: "auth",
+      noauth: true,
+    },
+    component: () => import("@/components/StartPage.vue"),
+  },
+  {
     path: "/SignInView",
     name: "SignInView",
     meta: {
