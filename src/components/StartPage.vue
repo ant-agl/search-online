@@ -5,7 +5,7 @@
     <router-link to="/SignInView">Войти</router-link>
     <router-link to="/ResetPasswordView">Восстановление пароля</router-link>
     <router-link to="/CheckCode">Потверждение регистрации</router-link>
-    <router-link to="/CheckCode/restPassword=true"
+    <router-link to="/CheckCode/resetPassword=true"
       >Потверждение восстановление пароля</router-link
     >
   </ul>
