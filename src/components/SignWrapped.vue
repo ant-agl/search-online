@@ -15,7 +15,9 @@
                     <div class="col-lg-6 text-center">
                       <div class="card-body p-4">
                         <router-link to="/">
-                          <img
+                          <h2>Найти.Онлайн</h2>
+
+                          <!-- <img
                             src="@/assets/images/logo-light.png"
                             alt=""
                             class="logo-light"
@@ -24,7 +26,7 @@
                             src="@/assets/images/logo-dark.png"
                             alt=""
                             class="logo-dark"
-                          />
+                          /> -->
                         </router-link>
 
                         <div class="mt-5">

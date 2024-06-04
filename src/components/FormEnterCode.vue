@@ -21,9 +21,7 @@
 
       <AppButton>Отправить</AppButton>
     </form>
-    <AppError v-if="errorMessage">
-      {{ errorMessage }}
-    </AppError>
+    <AppError :value="errorMessage" />
   </div>
 </template>
 
@@ -65,7 +63,7 @@ const authUser = async () => {
         await store.dispatch("authActivate", { code: codeField.value.trim() });
       }
 
-      router.push("/SignInView");
+      router.push("/");
     } catch (error) {
       errorMessage.value = error.response.data.detail;
     }

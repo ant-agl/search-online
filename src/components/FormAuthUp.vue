@@ -12,8 +12,8 @@
           v-model:value="v.login.$model"
           :errors="v.login.$errors"
           type="text"
-          placeholder="Введите логин"
-          label="Логин"
+          placeholder="Введите имя и фамилию"
+          label="Имя и фамилия"
         />
       </div>
       <div class="mb-3">
@@ -64,9 +64,7 @@
         >
       </p>
     </div>
-    <AppError v-if="errorMessage">
-      {{ errorMessage }}
-    </AppError>
+    <AppError :value="errorMessage" />
   </div>
 </template>
 

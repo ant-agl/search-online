@@ -51,9 +51,7 @@
         </router-link>
       </p>
     </div>
-    <AppError v-if="errorMessage">
-      {{ errorMessage }}
-    </AppError>
+    <AppError :value="errorMessage" />
   </div>
 </template>
 <script setup>

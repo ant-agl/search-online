@@ -1,21 +1,18 @@
 <template>
-  <TransitionGroup name="error">
-    <div class="badge bg-danger"><slot></slot></div>
-  </TransitionGroup>
+  <div class="error">
+    <div class="badge bg-danger">{{ value }}</div>
+  </div>
 </template>
-
+<script setup>
+defineProps({
+  value: String,
+});
+</script>
 <style scoped>
 div {
   display: block;
+  position: relative;
   margin-top: 5px;
-}
-.error-enter-active,
-.error-leave-active {
-  transition: all 0.5s ease;
-}
-.error-enter-from,
-.error-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
+  height: 20px;
 }
 </style>

@@ -33,9 +33,7 @@
         Войти
       </router-link>
     </p>
-    <AppError v-if="errorMessage">
-      {{ errorMessage }}
-    </AppError>
+    <AppError :value="errorMessage" />
   </div>
 </template>
 <script setup>
