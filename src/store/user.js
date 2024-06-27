@@ -2,12 +2,30 @@ import api from "@/axios/api";
 export default {
   state: {
     userData: {
-      firstName: "",
-      lastName: "",
-      email: "",
+      firstName: "Джеки Чан",
+      email: "Djeki@mail.ru",
+      phone: "+79385269783",
+      location: "Tenruk",
+      hideNumber: false,
+      img: "",
+    },
+    userOrganization: {
+      name: "Night City",
+      address: " Rublevka",
+      location: 1,
+      index: "3504043",
+      inn: "213-123-123 55",
+      email: "Night@mail.ru",
+      phone: "+79993450565",
+      about: "It is Cool company",
+      category: "",
+      img: "",
     },
   },
-  getters: { userData: (s) => s.userData },
+  getters: {
+    userData: (s) => s.userData,
+    userOrganization: (s) => s.userOrganization,
+  },
   mutations: {},
   actions: {
     async registrationUserData(context, data) {

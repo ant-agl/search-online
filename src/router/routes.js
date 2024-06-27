@@ -51,6 +51,17 @@ const routes = [
     },
     component: () => import("@/views/CheckCode.vue"),
   },
+  {
+    path: "/profile",
+    name: "Profile",
+    meta: {
+      titleKey: "Profile",
+      layout: "auth",
+      noauth: true,
+      props: true,
+    },
+    component: () => import("@/views/ProfileView.vue"),
+  },
 ];
 
 export default routes;

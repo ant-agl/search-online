@@ -174,7 +174,7 @@ export default {
 </script>
 
 <style>
-/* @import "@/assets/css/app.min.css";
-@import "@/assets/css/bootstrap.min.css"; */
+@import "@/assets/css/app.min.css";
+@import "@/assets/css/bootstrap.min.css";
 @import "@/assets/css/icons.min.css";
 </style>

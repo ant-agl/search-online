@@ -15,4 +15,7 @@ export default {
 .d {
   font-size: 60px;
 }
+body {
+  background-color: white !important;
+}
 </style>

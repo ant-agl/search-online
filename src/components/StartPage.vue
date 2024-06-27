@@ -8,6 +8,7 @@
     <router-link to="/CheckCode/resetPassword=true"
       >Потверждение восстановление пароля</router-link
     >
+    <router-link to="/profile">Профиль</router-link>
   </ul>
 </template>
 
