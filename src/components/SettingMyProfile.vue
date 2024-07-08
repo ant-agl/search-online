@@ -53,7 +53,7 @@ const onSubmit = () => {
     hideNumber: checkboxLocal.value,
   };
   console.log(v.value.$pending);
-  if (v.value.$pending) {
+  if (v.value.$validate) {
     store.commit("updateUserData", formData);
     console.log("Данные сохранены успешно:", formData);
   }
