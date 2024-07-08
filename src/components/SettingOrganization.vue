@@ -61,11 +61,23 @@ const onSubmit = () => {
     newImg: newImg.value,
   });
 };
-function changeImg(event) {
-  const file = event.target.files[0];
-  if (file) {
-    imageUrl.value = URL.createObjectURL(file);
-    newImg.value = file;
+function onFileChange(e) {
+  const fileType = e.target.files[0].type; // Получение типа файла
+  if (
+    ["image/jpg", "image/jpeg", "image/png", "image/gif"].includes(fileType)
+  ) {
+    // Проверка формата файла
+    const size = e.target.files[0].size; // Получение размера файла
+    // Проверка размера файла
+    if (size < 2 * 1024 * 1024) {
+      // Размер файла меньше 2 МБ
+      imageUrl.value = URL.createObjectURL(e.target.files[0]);
+      newImg.value = e.target.files[0];
+    } else {
+      alert("Размер файла слишком большой");
+    }
+  } else {
+    alert("Файл не является изображением");
   }
 }
 </script>
@@ -93,7 +105,7 @@ function changeImg(event) {
                 id="profile-img-file-input"
                 type="file"
                 class="profile-img-file-input"
-                @change="changeImg"
+                @change="onFileChange"
               />
               <label
                 for="profile-img-file-input"
@@ -140,12 +152,11 @@ function changeImg(event) {
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label for="city" class="form-label"
-                >Город
-                <SelectChoice
-                  :options="options"
-                  v-model:modelValue="selectedOption"
-              /></label>
+              <SelectChoice
+                label="Город"
+                :options="options"
+                v-model:modelValue="selectedOption"
+              />
             </div>
           </div>
           <div class="col-lg-6">

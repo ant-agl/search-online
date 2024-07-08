@@ -1,3 +1,7 @@
+<script setup>
+import ProfileComponent from "@/components/ProfileComponent.vue";
+</script>
+
 <template>
   <section class="section">
     <div class="container">
@@ -7,8 +11,3 @@
     </div>
   </section>
 </template>
-
-<script setup>
-import ProfileComponent from "@/components/ProfileComponent.vue";
-</script>
-<style scoped></style>

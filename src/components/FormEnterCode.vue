@@ -1,30 +1,3 @@
-<template>
-  <div class="w-100">
-    <div class="text-center">
-      <template v-if="resetPassword">
-        <h5>Введите код для восстановления пароля</h5>
-      </template>
-      <template v-else>
-        <h5>Введите код для подтверждения авторизации</h5>
-      </template>
-    </div>
-    <form @submit.prevent="authUser">
-      <div class="mb-4">
-        <AppInput
-          type="text"
-          v-model:value="v.codeField.$model"
-          placeholder="Введите код"
-          :label="resetPassword ? 'Код восстановления' : 'Код активации'"
-          :errors="v.codeField.$errors"
-        />
-      </div>
-
-      <AppButton>Отправить</AppButton>
-    </form>
-    <AppError :value="errorMessage" />
-  </div>
-</template>
-
 <script setup>
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
@@ -70,6 +43,7 @@ const authUser = async () => {
   }
 };
 </script>
+
 <style scoped>
 .error {
   color: red;
@@ -79,3 +53,30 @@ const authUser = async () => {
   margin-bottom: 20px;
 }
 </style>
+
+<template>
+  <div class="w-100">
+    <div class="text-center">
+      <template v-if="resetPassword">
+        <h5>Введите код для восстановления пароля</h5>
+      </template>
+      <template v-else>
+        <h5>Введите код для подтверждения авторизации</h5>
+      </template>
+    </div>
+    <form @submit.prevent="authUser">
+      <div class="mb-4">
+        <AppInput
+          type="text"
+          v-model:value="v.codeField.$model"
+          placeholder="Введите код"
+          :label="resetPassword ? 'Код восстановления' : 'Код активации'"
+          :errors="v.codeField.$errors"
+        />
+      </div>
+
+      <AppButton>Отправить</AppButton>
+    </form>
+    <AppError :value="errorMessage" />
+  </div>
+</template>

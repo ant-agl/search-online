@@ -1,3 +1,65 @@
+<script setup>
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { minLength, helpers, email, required } from "@vuelidate/validators";
+import AppInput from "@/components/App/AppInput";
+import AppButton from "@/components/App/AppButton";
+import AppError from "@/components/App/AppError";
+
+const store = useStore();
+
+const emailField = ref(localStorage.getItem("email") || "");
+const passwordField = ref(localStorage.getItem("password") || "");
+const errorMessage = ref("");
+const checkbox = ref(false);
+const rules = computed(() => ({
+  emailField: {
+    email: helpers.withMessage("Вы ввели неверный email", email),
+    required: helpers.withMessage("Вы должны написать email", required),
+  },
+  passwordField: {
+    minLength: helpers.withMessage(
+      "Минимальная длина 8 символов",
+      minLength(8)
+    ),
+    required: helpers.withMessage("Вы должны написать пароль", required),
+  },
+}));
+const v = useVuelidate(rules, {
+  emailField,
+  passwordField,
+});
+
+const onSubmit = async () => {
+  v.value.$touch();
+  console.log(checkbox.value);
+  if (!v.value.$invalid) {
+    try {
+      errorMessage.value = "";
+      const data = {
+        email: emailField.value.trim(),
+        password: passwordField.value.trim(),
+      };
+      await store.dispatch("login", data);
+      if (checkbox.value) {
+        localStorage.setItem("email", emailField.value.trim());
+        localStorage.setItem("password", passwordField.value.trim());
+      }
+      // router.push("/CheckAuth");
+    } catch (error) {
+      errorMessage.value = error.response.data.detail;
+    }
+  }
+};
+</script>
+
+<style scoped>
+.mb-6 {
+  margin: 2rem 0;
+}
+</style>
+
 <template>
   <div class="w-100">
     <div class="text-center mb-6">
@@ -54,63 +116,3 @@
     <AppError :value="errorMessage" />
   </div>
 </template>
-<script setup>
-import { useStore } from "vuex";
-import { ref, computed } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { minLength, helpers, email, required } from "@vuelidate/validators";
-import AppInput from "@/components/App/AppInput";
-import AppButton from "@/components/App/AppButton";
-import AppError from "@/components/App/AppError";
-
-const store = useStore();
-
-const emailField = ref(localStorage.getItem("email") || "");
-const passwordField = ref(localStorage.getItem("password") || "");
-const errorMessage = ref("");
-const checkbox = ref(false);
-const rules = computed(() => ({
-  emailField: {
-    email: helpers.withMessage("Вы ввели неверный email", email),
-    required: helpers.withMessage("Вы должны написать email", required),
-  },
-  passwordField: {
-    minLength: helpers.withMessage(
-      "Минимальная длина 8 символов",
-      minLength(8)
-    ),
-    required: helpers.withMessage("Вы должны написать пароль", required),
-  },
-}));
-const v = useVuelidate(rules, {
-  emailField,
-  passwordField,
-});
-
-const onSubmit = async () => {
-  v.value.$touch();
-  console.log(checkbox.value);
-  if (!v.value.$invalid) {
-    try {
-      errorMessage.value = "";
-      const data = {
-        email: emailField.value.trim(),
-        password: passwordField.value.trim(),
-      };
-      await store.dispatch("login", data);
-      if (checkbox.value) {
-        localStorage.setItem("email", emailField.value.trim());
-        localStorage.setItem("password", passwordField.value.trim());
-      }
-      // router.push("/CheckAuth");
-    } catch (error) {
-      errorMessage.value = error.response.data.detail;
-    }
-  }
-};
-</script>
-<style scoped>
-.mb-6 {
-  margin: 2rem 0;
-}
-</style>

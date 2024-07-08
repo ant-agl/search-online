@@ -1,29 +1,3 @@
-<template>
-  <div>
-    <label :style="{ width: width }">
-      {{ label }} <slot></slot>
-      <input
-        :type="type"
-        :class="inputClass"
-        :value="value"
-        :placeholder="placeholder"
-        :checked="checked"
-        @input="updateValue"
-        @change="updateChecked"
-      />
-    </label>
-    <div class="error">
-      <div v-for="error of errors" :key="error.$uid">
-        <span v-if="error" class="badge bg-danger">{{ error.$message }}</span>
-      </div>
-    </div>
-  </div>
-</template>
-<style scoped>
-.error {
-  height: 10px;
-}
-</style>
 <script setup>
 import { defineProps, defineEmits, toRefs } from "vue";
 const emit = defineEmits(["update:value", "update:checked"]);
@@ -72,3 +46,34 @@ const updateChecked = (e) => {
   }
 };
 </script>
+
+<style scoped>
+.error {
+  height: 10px;
+}
+.checkbox {
+  position: relative;
+  left: -20px;
+}
+</style>
+<template>
+  <div>
+    <label :style="{ width: width }">
+      {{ label }} <slot></slot>
+      <input
+        :type="type"
+        :class="inputClass"
+        :value="value"
+        :placeholder="placeholder"
+        :checked="checked"
+        @input="updateValue"
+        @change="updateChecked"
+      />
+    </label>
+    <div class="error" :class="{ checkbox: type == 'checkbox' }">
+      <div v-for="error of errors" :key="error.$uid">
+        <span v-if="error" class="badge bg-danger">{{ error.$message }}</span>
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,3 +1,20 @@
+<script setup>
+defineProps({
+  imgUrl: {
+    type: String,
+  },
+});
+</script>
+
+<style scoped>
+@media screen and (min-width: 995px) {
+  .card,
+  .col-lg-6 {
+    height: 100% !important;
+  }
+}
+</style>
+
 <template>
   <!-- Bootstrap Css -->
 
@@ -61,23 +78,3 @@
 
   <!-- END layout-wrapper -->
 </template>
-<style scoped></style>
-<script>
-export default {
-  name: "SignUp",
-  props: {
-    imgUrl: {
-      type: String,
-    },
-  },
-};
-</script>
-
-<style scoped>
-@media screen and (min-width: 995px) {
-  .card,
-  .col-lg-6 {
-    height: 100% !important;
-  }
-}
-</style>

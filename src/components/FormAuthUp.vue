@@ -1,73 +1,3 @@
-<template>
-  <div class="w-100">
-    <div class="text-center">
-      <h5>Давайте начнем</h5>
-      <p class="text-white-70">
-        Зарегистрируйтесь и получите доступ ко всем функциям Jobcy.
-      </p>
-    </div>
-    <form @submit.prevent="onSubmit" class="auth-form">
-      <div class="mb-3">
-        <AppInput
-          v-model:value="v.login.$model"
-          :errors="v.login.$errors"
-          type="text"
-          placeholder="Введите имя и фамилию"
-          label="Имя и фамилия"
-        />
-      </div>
-      <div class="mb-3">
-        <AppInput
-          v-model:value="v.emailField.$model"
-          :errors="v.emailField.$errors"
-          type="email"
-          placeholder="Введите электронную почту"
-          label="Электронная почта"
-        />
-      </div>
-      <div class="mb-3">
-        <AppInput
-          v-model:value="v.passwordField.$model"
-          :errors="v.passwordField.$errors"
-          type="password"
-          placeholder="Введите пароль"
-          label="Пароль"
-        />
-      </div>
-      <div class="mb-4">
-        <div class="form-check">
-          <AppInput
-            :errors="v.checkField.$errors"
-            class="form-check-input"
-            type="checkbox"
-            v-model:checked="v.checkField.$model"
-            label="я согласен"
-          >
-            <router-link to="#" class="text-white text-decoration-underline">
-              Условия и положения
-            </router-link>
-          </AppInput>
-        </div>
-      </div>
-      <div class="text-center">
-        <AppButton>Зарегистрироваться</AppButton>
-      </div>
-    </form>
-    <div class="mt-3 text-center">
-      <p class="mb-0">
-        Уже зарегистрировались?
-        <router-link
-          to="/SignInView"
-          class="fw-medium text-white text-decoration-underline"
-        >
-          Войти</router-link
-        >
-      </p>
-    </div>
-    <AppError :value="errorMessage" />
-  </div>
-</template>
-
 <script setup>
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
@@ -144,10 +74,72 @@ const onSubmit = async () => {
 };
 </script>
 
-<style scoped>
-.error-message {
-  color: red;
-  font-size: 12px;
-  margin-top: 4px;
-}
-</style>
+<template>
+  <div class="w-100">
+    <div class="text-center">
+      <h5>Давайте начнем</h5>
+      <p class="text-white-70">
+        Зарегистрируйтесь и получите доступ ко всем функциям Jobcy.
+      </p>
+    </div>
+    <form @submit.prevent="onSubmit" class="auth-form">
+      <div class="mb-3">
+        <AppInput
+          v-model:value="v.login.$model"
+          :errors="v.login.$errors"
+          type="text"
+          placeholder="Введите имя и фамилию"
+          label="Имя и фамилия"
+        />
+      </div>
+      <div class="mb-3">
+        <AppInput
+          v-model:value="v.emailField.$model"
+          :errors="v.emailField.$errors"
+          type="email"
+          placeholder="Введите электронную почту"
+          label="Электронная почта"
+        />
+      </div>
+      <div class="mb-3">
+        <AppInput
+          v-model:value="v.passwordField.$model"
+          :errors="v.passwordField.$errors"
+          type="password"
+          placeholder="Введите пароль"
+          label="Пароль"
+        />
+      </div>
+      <div class="mb-4">
+        <div class="form-check">
+          <AppInput
+            :errors="v.checkField.$errors"
+            class="form-check-input"
+            type="checkbox"
+            v-model:checked="v.checkField.$model"
+            label="я согласен"
+          >
+            <router-link to="#" class="text-white text-decoration-underline">
+              Условия и положения
+            </router-link>
+          </AppInput>
+        </div>
+      </div>
+      <div class="text-center">
+        <AppButton>Зарегистрироваться</AppButton>
+      </div>
+    </form>
+    <div class="mt-3 text-center">
+      <p class="mb-0">
+        Уже зарегистрировались?
+        <router-link
+          to="/SignInView"
+          class="fw-medium text-white text-decoration-underline"
+        >
+          Войти</router-link
+        >
+      </p>
+    </div>
+    <AppError :value="errorMessage" />
+  </div>
+</template>

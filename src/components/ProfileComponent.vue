@@ -23,7 +23,7 @@ const changeSwitcher = (numberPage) => {
 .profile-contact li label {
   min-width: 145px !important;
 }
-.form-control {
+:deep(.form-control) {
   margin-bottom: 0 !important;
 }
 </style>

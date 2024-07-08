@@ -1,8 +1,3 @@
-<template>
-  <div class="error">
-    <div class="badge bg-danger">{{ value }}</div>
-  </div>
-</template>
 <script setup>
 defineProps({
   value: String,
@@ -16,3 +11,9 @@ div {
   height: 20px;
 }
 </style>
+
+<template>
+  <div class="error">
+    <div class="badge bg-danger">{{ value }}</div>
+  </div>
+</template>

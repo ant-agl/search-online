@@ -1,3 +1,40 @@
+<script setup>
+import AppButton from "@/components/App/AppButton";
+import AppInput from "@/components/App/AppInput";
+import AppError from "@/components/App/AppError";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { required, email, helpers } from "@vuelidate/validators";
+const store = useStore();
+const emailField = ref("");
+const router = useRouter();
+const errorMessage = ref("");
+const rules = computed(() => ({
+  emailField: {
+    email: helpers.withMessage("Вы ввели неверный email", email),
+    required: helpers.withMessage("Вы должны написать email", required),
+  },
+}));
+const v = useVuelidate(rules, { emailField });
+
+const onSubmit = async () => {
+  v.value.$touch();
+  if (!v.value.$invalid) {
+    try {
+      errorMessage.value = "";
+      await store.dispatch("userResetPassword", {
+        email: emailField.value.trim(),
+      });
+      router.push("/CheckCode/resetPassword=true");
+    } catch (error) {
+      errorMessage.value = error.response.data.detail;
+    }
+  }
+};
+</script>
+
 <template>
   <div class="text-center mb-4">
     <h5>Сброс пароля</h5>
@@ -36,39 +73,3 @@
     <AppError :value="errorMessage" />
   </div>
 </template>
-<script setup>
-import AppButton from "@/components/App/AppButton";
-import AppInput from "@/components/App/AppInput";
-import AppError from "@/components/App/AppError";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import { ref, computed } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
-const store = useStore();
-const emailField = ref("");
-const router = useRouter();
-const errorMessage = ref("");
-const rules = computed(() => ({
-  emailField: {
-    email: helpers.withMessage("Вы ввели неверный email", email),
-    required: helpers.withMessage("Вы должны написать email", required),
-  },
-}));
-const v = useVuelidate(rules, { emailField });
-
-const onSubmit = async () => {
-  v.value.$touch();
-  if (!v.value.$invalid) {
-    try {
-      errorMessage.value = "";
-      await store.dispatch("userResetPassword", {
-        email: emailField.value.trim(),
-      });
-      router.push("/CheckCode/resetPassword=true");
-    } catch (error) {
-      errorMessage.value = error.response.data.detail;
-    }
-  }
-};
-</script>

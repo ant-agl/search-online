@@ -10,7 +10,7 @@ const routes = [
     component: () => import("@/components/StartPage.vue"),
   },
   {
-    path: "/SignInView",
+    path: "/signin",
     name: "SignInView",
     meta: {
       titleKey: "SignInView",
@@ -20,7 +20,7 @@ const routes = [
     component: () => import("@/views/SignInView.vue"),
   },
   {
-    path: "/SignUpView",
+    path: "/signup",
     name: "SignUpView",
     meta: {
       titleKey: "registration",
@@ -30,7 +30,7 @@ const routes = [
     component: () => import("@/views/SignUpView.vue"),
   },
   {
-    path: "/ResetPasswordView",
+    path: "/forgot",
     name: "ResetPasswordView",
     meta: {
       titleKey: "ResetPasswordView",
@@ -41,7 +41,7 @@ const routes = [
   },
 
   {
-    path: "/CheckCode/:resetPassword?",
+    path: "/verify/:resetPassword?",
     name: "CheckCode",
     meta: {
       titleKey: "CheckCode",

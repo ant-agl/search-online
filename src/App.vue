@@ -1,15 +1,5 @@
-<template>
-  <AppTheme />
-  <router-view />
-</template>
-
-<script>
+<script setup>
 import AppTheme from "@/components/App/AppTheme.vue";
-export default {
-  components: {
-    AppTheme,
-  },
-};
 </script>
 <style lang="scss">
 .d {
@@ -19,3 +9,8 @@ body {
   background-color: white !important;
 }
 </style>
+
+<template>
+  <AppTheme />
+  <router-view />
+</template>

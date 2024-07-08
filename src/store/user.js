@@ -2,10 +2,10 @@ import api from "@/axios/api";
 export default {
   state: {
     userData: {
-      firstName: "Джеки Чан",
+      name: "Джеки Чан",
       email: "Djeki@mail.ru",
-      phone: "+79385269783",
-      location: "Tenruk",
+      phone: "+7 (938) 526-97-83",
+      location: 1,
       hideNumber: false,
       img: "",
     },
@@ -14,9 +14,9 @@ export default {
       address: " Rublevka",
       location: 1,
       index: "3504043",
-      inn: "213-123-123 55",
+      inn: "213123123 55",
       email: "Night@mail.ru",
-      phone: "+79993450565",
+      phone: "+7 (938) 526-97-83",
       about: "It is Cool company",
       category: "",
       img: "",
@@ -26,7 +26,11 @@ export default {
     userData: (s) => s.userData,
     userOrganization: (s) => s.userOrganization,
   },
-  mutations: {},
+  mutations: {
+    updateUserData(state, payload) {
+      state.userData = { ...state.userData, ...payload };
+    },
+  },
   actions: {
     async registrationUserData(context, data) {
       console.log(data);
