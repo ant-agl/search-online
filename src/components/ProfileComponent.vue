@@ -4,29 +4,19 @@ import { useStore } from "vuex";
 import SettingMyProfile from "@/components/SettingMyProfile.vue";
 import SettingOrganization from "@/components/SettingOrganization.vue";
 const store = useStore();
-const switcher = ref([true, false]);
-
-const changeSwitcher = (numberPage) => {
-  let map = [];
-
-  for (let i = 0; i < switcher.value.length; i++) {
-    if (numberPage === i) {
-      map[i] = true;
-    } else {
-      map[i] = false;
-    }
-  }
-  switcher.value = map;
-};
+const switcher = ref("profile");
+const navElements = [
+  {
+    id: "profile",
+    name: "Настройки профиля",
+  },
+  {
+    id: "org",
+    name: "Настройки орг. лица",
+  },
+];
 </script>
-<style scoped>
-.profile-contact li label {
-  min-width: 145px !important;
-}
-:deep(.form-control) {
-  margin-bottom: 0 !important;
-}
-</style>
+
 <template>
   <div class="col-lg-4">
     <div class="card profile-sidebar me-lg-4">
@@ -57,44 +47,25 @@ const changeSwitcher = (numberPage) => {
         id="pills-tab"
         role="tablist"
       >
-        <li class="nav-item" role="presentation">
+        <li
+          class="nav-item"
+          v-for="(item, index) in navElements"
+          :key="item.id"
+        >
           <button
             class="nav-link"
-            :class="{ active: switcher[0] }"
-            id="settings-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#settings"
-            type="button"
-            role="tab"
-            aria-controls="settings"
-            aria-selected="false"
-            @click="changeSwitcher(0)"
+            :class="{ active: item.id == switcher }"
+            @click="switcher = item.id"
           >
             Настройки профиля
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            :class="{ active: switcher[1] }"
-            id="settings-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#settings"
-            type="button"
-            role="tab"
-            aria-controls="settings"
-            aria-selected="false"
-            @click="changeSwitcher(1)"
-          >
-            Настройки юр.лица
           </button>
         </li>
       </ul>
       <!--end profile-content-nav-->
       <div class="card-body p-4">
         <div class="tab-content" id="pills-tabContent">
-          <SettingMyProfile v-show="switcher[0]" />
-          <SettingOrganization v-show="switcher[1]" />
+          <SettingMyProfile v-show="switcher == 'profile'" />
+          <SettingOrganization v-show="switcher == 'org'" />
           <!--end tab-pane-->
         </div>
         <!--end tab-content-->
