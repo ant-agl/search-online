@@ -17,17 +17,17 @@ const rules = computed(() => ({
     required: helpers.withMessage("Вы должны написать email", required),
   },
 }));
-const v = useVuelidate(rules, { emailField });
+const v$ = useVuelidate(rules, { emailField });
 
 const onSubmit = async () => {
-  v.value.$touch();
-  if (!v.value.$invalid) {
+  v$.value.$touch();
+  if (!v$.value.$invalid) {
     try {
       errorMessage.value = "";
       await store.dispatch("userResetPassword", {
         email: emailField.value.trim(),
       });
-      router.push("/CheckCode/resetPassword=true");
+      router.push("/CheckCode/resetpassword");
     } catch (error) {
       errorMessage.value = error.response.data.detail;
     }
@@ -50,9 +50,9 @@ const onSubmit = async () => {
       <AppInput
         type="email"
         placeholder="Введите адресс электронной почты"
-        v-model:value="v.emailField.$model"
+        v-model:value="v$.emailField.$model"
         label="Электронная почта"
-        :errors="v.emailField.$errors"
+        :errors="v$.emailField.$errors"
       />
     </div>
     <div class="mt-3">

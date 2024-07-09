@@ -44,7 +44,7 @@ onMounted(() => {
     noResultsText: "Ничего не найдено",
   });
 
-  choicesInstance.setChoices(props.options, "id", "name", false);
+  choicesInstance.setChoices(props.options, "id", "name", "region", false);
 
   // Set default value after Choices initialization
   if (props.modelValue) {

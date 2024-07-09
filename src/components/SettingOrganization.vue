@@ -4,6 +4,7 @@ import { useStore } from "vuex";
 import SelectChoice from "@/components/App/SelectChoice.vue";
 import useVuelidate from "@vuelidate/core";
 import AppInput from "@/components/App/AppInput";
+import { onImgUpload } from "@/utils/utilsFunctions";
 import { minLength, helpers, email } from "@vuelidate/validators";
 const store = useStore();
 const name = ref(store.getters.userOrganization.name);
@@ -41,14 +42,14 @@ const rules = computed(() => ({
     minLength: helpers.withMessage("Введите минимум 3 символа", minLength(3)),
   },
 }));
-const v = useVuelidate(rules, {
+const v$ = useVuelidate(rules, {
   emailField,
   index,
   inn,
   name,
 });
 const onSubmit = () => {
-  v.value.$touch();
+  v$.value.$touch();
   console.log({
     name: name.value.trim(),
     address: address.value.trim(),
@@ -61,25 +62,10 @@ const onSubmit = () => {
     newImg: newImg.value,
   });
 };
-function onFileChange(e) {
-  const fileType = e.target.files[0].type; // Получение типа файла
-  if (
-    ["image/jpg", "image/jpeg", "image/png", "image/gif"].includes(fileType)
-  ) {
-    // Проверка формата файла
-    const size = e.target.files[0].size; // Получение размера файла
-    // Проверка размера файла
-    if (size < 2 * 1024 * 1024) {
-      // Размер файла меньше 2 МБ
-      imageUrl.value = URL.createObjectURL(e.target.files[0]);
-      newImg.value = e.target.files[0];
-    } else {
-      alert("Размер файла слишком большой");
-    }
-  } else {
-    alert("Файл не является изображением");
-  }
-}
+
+const handleImageUpload = (e) => {
+  onImgUpload(e, imageUrl);
+};
 </script>
 
 <template>
@@ -105,7 +91,7 @@ function onFileChange(e) {
                 id="profile-img-file-input"
                 type="file"
                 class="profile-img-file-input"
-                @change="onFileChange"
+                @change="handleImageUpload"
               />
               <label
                 for="profile-img-file-input"
@@ -120,8 +106,8 @@ function onFileChange(e) {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v.name.$model"
-                :errors="v.name.$errors"
+                v-model:value="v$.name.$model"
+                :errors="v$.name.$errors"
                 placeholder="Введите название организации"
                 label="Название организации"
               />
@@ -131,8 +117,8 @@ function onFileChange(e) {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v.emailField.$model"
-                :errors="v.emailField.$errors"
+                v-model:value="v$.emailField.$model"
+                :errors="v$.emailField.$errors"
                 type="email"
                 placeholder="Введите электронную почту"
                 label="Электронная почта"
@@ -155,6 +141,7 @@ function onFileChange(e) {
               <SelectChoice
                 label="Город"
                 :options="options"
+                name="city"
                 v-model:modelValue="selectedOption"
               />
             </div>
@@ -172,9 +159,9 @@ function onFileChange(e) {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v.index.$model"
+                v-model:value="v$.index.$model"
                 v-mask="'######'"
-                :errors="v.index.$errors"
+                :errors="v$.index.$errors"
                 placeholder="Введите индекс"
                 label="Индекс"
               />
@@ -183,9 +170,9 @@ function onFileChange(e) {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v.inn.$model"
+                v-model:value="v$.inn.$model"
                 v-mask="'###-###-### ##'"
-                :errors="v.inn.$errors"
+                :errors="v$.inn.$errors"
                 placeholder="Введите ИНН"
                 label="ИНН"
               />

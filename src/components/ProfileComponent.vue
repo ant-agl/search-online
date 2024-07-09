@@ -47,11 +47,7 @@ const navElements = [
         id="pills-tab"
         role="tablist"
       >
-        <li
-          class="nav-item"
-          v-for="(item, index) in navElements"
-          :key="item.id"
-        >
+        <li class="nav-item" v-for="item in navElements" :key="item.id">
           <button
             class="nav-link"
             :class="{ active: item.id == switcher }"

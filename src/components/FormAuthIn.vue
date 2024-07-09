@@ -26,15 +26,15 @@ const rules = computed(() => ({
     required: helpers.withMessage("Вы должны написать пароль", required),
   },
 }));
-const v = useVuelidate(rules, {
+const v$ = useVuelidate(rules, {
   emailField,
   passwordField,
 });
 
 const onSubmit = async () => {
-  v.value.$touch();
+  v$.value.$touch();
   console.log(checkbox.value);
-  if (!v.value.$invalid) {
+  if (!v$.value.$invalid) {
     try {
       errorMessage.value = "";
       const data = {
@@ -54,12 +54,6 @@ const onSubmit = async () => {
 };
 </script>
 
-<style scoped>
-.mb-6 {
-  margin: 2rem 0;
-}
-</style>
-
 <template>
   <div class="w-100">
     <div class="text-center mb-6">
@@ -69,20 +63,20 @@ const onSubmit = async () => {
     <form @submit.prevent="onSubmit" class="auth-form">
       <div class="mb-3">
         <AppInput
-          v-model:value="v.emailField.$model"
+          v-model:value="v$.emailField.$model"
           placeholder="Введите вашу электронную почту"
           label="Электронная почта"
           type="email"
-          :errors="v.emailField.$errors"
+          :errors="v$.emailField.$errors"
         />
       </div>
       <div class="mb-3">
         <AppInput
-          v-model:value="v.passwordField.$model"
+          v-model:value="v$.passwordField.$model"
           placeholder="Введите ваш пароль"
           label="Пароль"
           type="password"
-          :errors="v.passwordField.$errors"
+          :errors="v$.passwordField.$errors"
         />
       </div>
       <div class="mb-4">
@@ -106,7 +100,7 @@ const onSubmit = async () => {
       <p class="mb-0">
         У вас нет учетной записи?
         <router-link
-          to="SignUpView"
+          to="signup"
           class="fw-medium text-white text-decoration-underline"
         >
           Зарегистрироваться

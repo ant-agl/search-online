@@ -46,7 +46,7 @@ const rules = computed(() => ({
     ),
   },
 }));
-const v = useVuelidate(rules, {
+const v$ = useVuelidate(rules, {
   login,
   emailField,
   passwordField,
@@ -54,9 +54,9 @@ const v = useVuelidate(rules, {
 });
 
 const onSubmit = async () => {
-  v.value.$touch();
+  v$.value.$touch();
 
-  if (!v.value.$invalid) {
+  if (!v$.value.$invalid) {
     try {
       errorMessage.value = "";
       const data = {
@@ -85,8 +85,8 @@ const onSubmit = async () => {
     <form @submit.prevent="onSubmit" class="auth-form">
       <div class="mb-3">
         <AppInput
-          v-model:value="v.login.$model"
-          :errors="v.login.$errors"
+          v-model:value="v$.login.$model"
+          :errors="v$.login.$errors"
           type="text"
           placeholder="Введите имя и фамилию"
           label="Имя и фамилия"
@@ -94,8 +94,8 @@ const onSubmit = async () => {
       </div>
       <div class="mb-3">
         <AppInput
-          v-model:value="v.emailField.$model"
-          :errors="v.emailField.$errors"
+          v-model:value="v$.emailField.$model"
+          :errors="v$.emailField.$errors"
           type="email"
           placeholder="Введите электронную почту"
           label="Электронная почта"
@@ -103,8 +103,8 @@ const onSubmit = async () => {
       </div>
       <div class="mb-3">
         <AppInput
-          v-model:value="v.passwordField.$model"
-          :errors="v.passwordField.$errors"
+          v-model:value="v$.passwordField.$model"
+          :errors="v$.passwordField.$errors"
           type="password"
           placeholder="Введите пароль"
           label="Пароль"
@@ -113,10 +113,10 @@ const onSubmit = async () => {
       <div class="mb-4">
         <div class="form-check">
           <AppInput
-            :errors="v.checkField.$errors"
+            :errors="v$.checkField.$errors"
             class="form-check-input"
             type="checkbox"
-            v-model:checked="v.checkField.$model"
+            v-model:checked="v$.checkField.$model"
             label="я согласен"
           >
             <router-link to="#" class="text-white text-decoration-underline">
@@ -133,7 +133,7 @@ const onSubmit = async () => {
       <p class="mb-0">
         Уже зарегистрировались?
         <router-link
-          to="/SignInView"
+          to="/signin"
           class="fw-medium text-white text-decoration-underline"
         >
           Войти</router-link

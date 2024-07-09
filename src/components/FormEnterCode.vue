@@ -11,7 +11,7 @@ import { useRouter, useRoute } from "vue-router";
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const resetPassword = route.params.resetPassword;
+const resetPassword = route.params.resetpassword;
 const errorMessage = ref("");
 const codeField = ref("");
 const rules = computed(() => ({
@@ -19,13 +19,13 @@ const rules = computed(() => ({
     required: helpers.withMessage("Вставьте код", required),
   },
 }));
-const v = useVuelidate(rules, {
+const v$ = useVuelidate(rules, {
   codeField,
 });
 
 const authUser = async () => {
-  v.value.$touch();
-  if (!v.value.$invalid) {
+  v$.value.$touch();
+  if (!v$.value.$invalid) {
     try {
       errorMessage.value = "";
       if (resetPassword) {
@@ -44,16 +44,6 @@ const authUser = async () => {
 };
 </script>
 
-<style scoped>
-.error {
-  color: red;
-  margin: 20px 0;
-}
-.text-center {
-  margin-bottom: 20px;
-}
-</style>
-
 <template>
   <div class="w-100">
     <div class="text-center">
@@ -68,10 +58,10 @@ const authUser = async () => {
       <div class="mb-4">
         <AppInput
           type="text"
-          v-model:value="v.codeField.$model"
+          v-model:value="v$.codeField.$model"
           placeholder="Введите код"
           :label="resetPassword ? 'Код восстановления' : 'Код активации'"
-          :errors="v.codeField.$errors"
+          :errors="v$.codeField.$errors"
         />
       </div>
 

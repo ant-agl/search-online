@@ -41,7 +41,7 @@ const routes = [
   },
 
   {
-    path: "/verify/:resetPassword?",
+    path: "/verify/:resetpassword?",
     name: "CheckCode",
     meta: {
       titleKey: "CheckCode",

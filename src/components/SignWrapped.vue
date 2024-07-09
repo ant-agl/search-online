@@ -5,16 +5,13 @@ defineProps({
   },
 });
 </script>
-
 <style scoped>
-@media screen and (min-width: 995px) {
-  .card,
+@media (min-width: 992px) {
   .col-lg-6 {
-    height: 100% !important;
+    height: 582px;
   }
 }
 </style>
-
 <template>
   <!-- Bootstrap Css -->
 
@@ -53,7 +50,7 @@ defineProps({
                     </div>
                     <!--end col-->
                     <div class="col-lg-6">
-                      <div class="auth-content card-body p-5 text-white">
+                      <div class="auth-content card-body p-5 h-100 text-white">
                         <slot name="formaUser"></slot>
                       </div>
                     </div>
