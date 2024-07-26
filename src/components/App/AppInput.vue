@@ -35,6 +35,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  id: {
+    type: String,
+  },
 });
 const { class: inputClass } = toRefs(props);
 const updateValue = (e) => {
@@ -66,6 +69,7 @@ const updateChecked = (e) => {
         :value="value"
         :placeholder="placeholder"
         :checked="checked"
+        :id="id"
         @input="updateValue"
         @change="updateChecked"
       />

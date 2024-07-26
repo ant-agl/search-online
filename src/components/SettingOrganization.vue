@@ -1,52 +1,59 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import SelectChoice from "@/components/App/SelectChoice.vue";
 import useVuelidate from "@vuelidate/core";
 import AppInput from "@/components/App/AppInput";
 import { onImgUpload } from "@/utils/utilsFunctions";
 import { minLength, helpers, email } from "@vuelidate/validators";
+import { debounce } from "lodash";
 const store = useStore();
-const name = ref(store.getters.userOrganization.name);
-const address = ref(store.getters.userOrganization.address);
-const selectedOption = ref(store.getters.userOrganization.location);
-const index = ref(store.getters.userOrganization.index);
-const inn = ref(store.getters.userOrganization.inn);
-const emailField = ref(store.getters.userOrganization.email);
-const phone = ref(store.getters.userOrganization.phone);
-const about = ref(store.getters.userOrganization.about);
-const imageUrl = ref(require("@/assets/images/user/img-02.jpg"));
-const newImg = ref();
-const options = ref([
-  { id: 1, name: "Москва" },
-  { id: 2, name: "Питер" },
-  { id: 3, name: "Екатеренбург" },
-  { id: 4, name: "Краснодар" },
-  { id: 5, name: "Ростов" },
-]);
+
+const userDataDefault = computed(() => store.getters.userOrganization);
+const userData = ref({ ...userDataDefault.value });
+const options = ref([]);
+const searchValue = ref("");
+const debouncedSearch = debounce((value) => {
+  store
+    .dispatch("searchCity", { name: value })
+    .then((citys) => (options.value = citys.data));
+}, 1000);
+
+const updateSearchValue = (value) => {
+  searchValue.value = value;
+  debouncedSearch(value);
+};
+onMounted(() => {
+  const id = store.getters.userData.location;
+  if (id) {
+    store.dispatch("getCity", { id: id }).then((city) => {
+      options.value = [city.data];
+      debouncedSearch(city.data.name.slice(0, 2));
+      console.log(city);
+      userData.location = city.data.id;
+    });
+  }
+});
 
 const rules = computed(() => ({
-  emailField: {
-    email: helpers.withMessage("Вы ввели неверный email", email),
-  },
-  index: {
-    minLength: helpers.withMessage(
-      "Индекс состоит из 6 символов",
-      minLength(6)
-    ),
-  },
-  inn: {
-    minLength: helpers.withMessage("ИНН состоит из 11 символов", minLength(14)),
-  },
-  name: {
-    minLength: helpers.withMessage("Введите минимум 3 символа", minLength(3)),
+  userData: {
+    email: {
+      email: helpers.withMessage("Вы ввели неверный email", email),
+    },
+
+    inn: {
+      minLength: helpers.withMessage(
+        "ИНН состоит из 11 символов",
+        minLength(14)
+      ),
+    },
+    name: {
+      minLength: helpers.withMessage("Введите минимум 3 символа", minLength(3)),
+    },
   },
 }));
 const v$ = useVuelidate(rules, {
-  emailField,
-  index,
-  inn,
-  name,
+  userData,
 });
 const onSubmit = () => {
   v$.value.$touch();
@@ -62,9 +69,21 @@ const onSubmit = () => {
     newImg: newImg.value,
   });
 };
-
+const isFormDirty = computed(() => {
+  // !Object.keys({ ...userDataDefault.value, ...userData.value }).map((key) => {
+  //   if (userDataDefault.value[key] != userData.value[key])
+  //     console.log(userDataDefault.value[key] + " " + " " + userData.value[key]);
+  // });
+  return !Object.keys({ ...userDataDefault.value, ...userData.value }).every(
+    (key) => userDataDefault.value[key] === userData.value[key]
+  );
+});
 const handleImageUpload = (e) => {
-  onImgUpload(e, imageUrl);
+  console.log(userDataDefault.value.img);
+  if (onImgUpload(e)) {
+    // store.commit("updateUserImg", URL.createObjectURL(e.target.files[0]));
+    userData.value.img = URL.createObjectURL(e.target.files[0]);
+  }
 };
 </script>
 
@@ -81,7 +100,7 @@ const handleImageUpload = (e) => {
         <div class="text-center">
           <div class="mb-4 profile-user">
             <img
-              :src="imageUrl"
+              :src="userData.img"
               class="rounded-circle img-thumbnail profile-img"
               id="profile-img"
               alt=""
@@ -106,8 +125,8 @@ const handleImageUpload = (e) => {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v$.name.$model"
-                :errors="v$.name.$errors"
+                v-model:value="userData.name"
+                :errors="v$.userData.name.$silentErrors"
                 placeholder="Введите название организации"
                 label="Название организации"
               />
@@ -117,8 +136,8 @@ const handleImageUpload = (e) => {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v$.emailField.$model"
-                :errors="v$.emailField.$errors"
+                v-model:value="userData.email"
+                :errors="v$.userData.email.$silentErrors"
                 type="email"
                 placeholder="Введите электронную почту"
                 label="Электронная почта"
@@ -129,7 +148,7 @@ const handleImageUpload = (e) => {
             <div class="mb-3">
               <AppInput
                 v-mask="'+7 (###) ###-##-##'"
-                v-model:value="phone"
+                v-model:value="userData.phone"
                 type="tel"
                 placeholder="Введите номер телефона"
                 label="Телефонный номер"
@@ -142,14 +161,15 @@ const handleImageUpload = (e) => {
                 label="Город"
                 :options="options"
                 name="city"
-                v-model:modelValue="selectedOption"
+                v-model:modelValue="userData.location"
+                @update:searchValue="updateSearchValue"
               />
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="address"
+                v-model:value="userData.address"
                 placeholder="Введите адресс"
                 label="Адрес"
               />
@@ -159,20 +179,9 @@ const handleImageUpload = (e) => {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v$.index.$model"
-                v-mask="'######'"
-                :errors="v$.index.$errors"
-                placeholder="Введите индекс"
-                label="Индекс"
-              />
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="mb-3">
-              <AppInput
-                v-model:value="v$.inn.$model"
+                v-model:value="userData.inn"
                 v-mask="'###-###-### ##'"
-                :errors="v$.inn.$errors"
+                :errors="v$.userData.inn.$silentErrors"
                 placeholder="Введите ИНН"
                 label="ИНН"
               />
@@ -188,7 +197,7 @@ const handleImageUpload = (e) => {
                   >Представьте вашу организацию</label
                 >
                 <textarea
-                  v-model="about"
+                  v-model="userData.about"
                   class="form-control"
                   id="about"
                   rows="5"
@@ -204,8 +213,7 @@ const handleImageUpload = (e) => {
       <div class="mt-4 text-end">
         <input
           type="submit"
-          name=""
-          id=""
+          :disabled="!isFormDirty"
           class="btn btn-primary"
           value="Сохранить"
           @click="onSubmit"

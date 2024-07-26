@@ -1,13 +1,13 @@
 <template>
   <label>
     {{ label }}
-    <select
-      class="form-control mt-3"
-      @change="updateValue"
-      :name="name"
-      ref="select"
-    ></select>
+    <select class="form-control mt-3" :name="name" ref="select"></select>
   </label>
+  <div class="error">
+    <div v-for="error of errors" :key="error.$uid">
+      <span v-if="error" class="badge bg-danger">{{ error.$message }}</span>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -31,37 +31,65 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  errors: {
+    type: Array,
+    required: false,
+  },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "update:searchValue"]);
 const select = ref(null);
 let choicesInstance = null;
 
-onMounted(() => {
+const initializeChoices = () => {
   choicesInstance = new Choices(select.value, {
     allowHTML: true,
     removeItemButton: true,
     noResultsText: "Ничего не найдено",
+    noChoicesText: "Введите для отображения списка",
+    searchEnabled: true,
   });
 
-  choicesInstance.setChoices(props.options, "id", "name", "region", false);
+  choicesInstance.setChoices(props.options, "id", "name", false);
 
-  // Set default value after Choices initialization
   if (props.modelValue) {
     choicesInstance.setChoiceByValue(props.modelValue);
   }
-});
 
-const updateValue = (event) => {
-  emit("update:modelValue", event.target.value);
+  select.value.addEventListener("change", (event) => {
+    updateValue(event);
+  });
+
+  select.value.addEventListener("search", () => {
+    const searchInput = choicesInstance.input.element.value;
+    emit("update:searchValue", searchInput);
+  });
 };
 
-// Watch for changes in modelValue and update Choices
+const updateValue = (event) => {
+  const value = event.target.value;
+  emit("update:modelValue", value);
+};
+
+onMounted(() => {
+  initializeChoices();
+});
+
 watch(
   () => props.modelValue,
   (newValue) => {
     if (choicesInstance) {
       choicesInstance.setChoiceByValue(newValue);
+    }
+  }
+);
+
+watch(
+  () => props.options,
+  (newOptions) => {
+    if (choicesInstance) {
+      choicesInstance.clearChoices();
+      choicesInstance.setChoices(newOptions, "id", "name", false);
     }
   }
 );

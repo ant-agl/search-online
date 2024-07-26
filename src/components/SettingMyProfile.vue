@@ -1,67 +1,77 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import AppInput from "./App/AppInput.vue";
 import SelectChoice from "@/components/App/SelectChoice.vue";
 import { minLength, helpers, email, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { onImgUpload } from "@/utils/utilsFunctions";
-import cities from "@/utils/cities";
+import { debounce } from "lodash";
 
 const store = useStore();
+const options = ref([]);
 
-const nameLocal = ref(store.getters.userData.name);
-const emailLocal = ref(store.getters.userData.email);
-const phoneLocal = ref(store.getters.userData.phone);
-const checkboxLocal = ref(store.getters.userData.hideNumber);
-const selectedOptionLocal = ref(store.getters.userData.location);
-const imageUrl = ref(require("@/assets/images/user/img-02.jpg"));
+const userDataDefault = computed(() => store.getters.userData);
+const userData = ref({ ...userDataDefault.value });
+const searchValue = ref("");
+const debouncedSearch = debounce((value) => {
+  store
+    .dispatch("searchCity", { name: value })
+    .then((citys) => (options.value = citys.data));
+}, 1000);
 
+const updateSearchValue = (value) => {
+  searchValue.value = value;
+  debouncedSearch(value);
+};
+onMounted(() => {
+  const id = store.getters.userData.location;
+  if (id) {
+    store.dispatch("getCity", { id: id }).then((city) => {
+      options.value = [city.data];
+      debouncedSearch(city.data.name.slice(0, 2));
+      console.log(city);
+      userData.location = city.data.id;
+    });
+  }
+});
 const rules = computed(() => ({
-  emailLocal: {
-    email: helpers.withMessage("Вы ввели неверный email", email),
-    required: helpers.withMessage("Email обязателен", required),
-  },
-  nameLocal: {
-    required: helpers.withMessage("ФИО обязательны", required),
-    minLength: helpers.withMessage("Введите минимум 3 символа", minLength(3)),
+  userData: {
+    email: {
+      email: helpers.withMessage("Вы ввели неверный email", email),
+      required: helpers.withMessage("Email обязателен", required),
+    },
+    name: {
+      required: helpers.withMessage("ФИО обязательны", required),
+      minLength: helpers.withMessage("Введите минимум 3 символа", minLength(3)),
+    },
   },
 }));
 
-const v$ = useVuelidate(rules, {
-  emailLocal,
-  nameLocal,
-});
+const v$ = useVuelidate(rules, { userData });
 
 const isFormDirty = computed(() => {
-  const userData = store.getters.userData;
-  const dirty =
-    nameLocal.value !== userData.name ||
-    emailLocal.value !== userData.email ||
-    phoneLocal.value !== userData.phone ||
-    checkboxLocal.value !== userData.hideNumber ||
-    selectedOptionLocal.value !== userData.location;
-
-  return dirty;
+  return !Object.keys({ ...userDataDefault.value, ...userData.value }).every(
+    (key) => userDataDefault.value[key] === userData.value[key]
+  );
 });
 
 const onSubmit = () => {
-  v$.value.$touch();
-  const formData = {
-    name: nameLocal.value.trim(),
-    email: emailLocal.value.trim(),
-    phone: phoneLocal.value,
-    hideNumber: checkboxLocal.value,
-  };
-  console.log(v$.value.$pending);
-  if (v$.value.$validate) {
-    store.commit("updateUserData", formData);
-    console.log("Данные сохранены успешно:", formData);
+  if (v$.value.$invalid) {
+    v$.value.$touch();
+    return false;
   }
+
+  store.commit("updateUserData", userData.value);
+  console.log("Данные сохранены успешно:", userData.value);
 };
 
 const handleImageUpload = (e) => {
-  onImgUpload(e, imageUrl);
+  console.log(userDataDefault.value.img);
+  if (onImgUpload(e)) {
+    // store.commit("updateUserImg", URL.createObjectURL(e.target.files[0]));
+    userData.value.img = URL.createObjectURL(e.target.files[0]);
+  }
 };
 </script>
 
@@ -78,7 +88,7 @@ const handleImageUpload = (e) => {
         <div class="text-center">
           <div class="mb-4 profile-user">
             <img
-              :src="imageUrl"
+              :src="userData.img"
               class="rounded-circle img-thumbnail profile-img"
               id="profile-img"
               alt=""
@@ -103,8 +113,8 @@ const handleImageUpload = (e) => {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v$.nameLocal.$model"
-                :errors="v$.nameLocal.$errors"
+                v-model:value="userData.name"
+                :errors="v$.userData.name.$silentErrors"
                 placeholder="Введите ФИО"
                 label="ФИО"
               />
@@ -113,19 +123,20 @@ const handleImageUpload = (e) => {
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
-                v-model:value="v$.emailLocal.$model"
-                :errors="v$.emailLocal.$errors"
+                v-model:value="userData.email"
+                :errors="v$.userData.email.$silentErrors"
                 type="email"
                 placeholder="Введите электронную почту"
                 label="Электронная почта"
               />
             </div>
           </div>
+
           <div class="col-lg-6">
             <div class="mb-3">
               <AppInput
                 v-mask="'+7 (###) ###-##-##'"
-                v-model:value="phoneLocal"
+                v-model:value="userData.phone"
                 type="tel"
                 placeholder="Введите номер телефона"
                 label="Телефонный номер"
@@ -136,19 +147,26 @@ const handleImageUpload = (e) => {
             <div class="mb-3">
               <SelectChoice
                 label="Город"
-                :options="cities"
+                :options="options"
                 name="city"
-                v-model:modelValue="selectedOptionLocal"
+                v-model:modelValue="userData.location"
+                @update:searchValue="updateSearchValue"
               />
             </div>
           </div>
+
           <div class="col-lg-6">
-            <AppInput
-              class="form-check-input"
-              type="checkbox"
-              label="Скрыть номер"
-              v-model:checked="checkboxLocal"
-            />
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :checked="userData.hideNumber"
+                @click="(e) => (userData.hideNumber = e.target.checked)"
+              />
+              <label class="form-check-label" for="flexSwitchCheckDefault"
+                >Скрыть номер</label
+              >
+            </div>
           </div>
         </div>
       </div>

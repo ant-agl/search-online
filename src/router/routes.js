@@ -62,6 +62,39 @@ const routes = [
     },
     component: () => import("@/views/ProfileView.vue"),
   },
+  {
+    path: "/test",
+    name: "Test",
+    meta: {
+      titleKey: "Test",
+      layout: "auth",
+      noauth: true,
+      props: true,
+    },
+    component: () => import("@/views/TestView.vue"),
+  },
+  {
+    path: "/roleselection",
+    name: "RoleSelection",
+    meta: {
+      titleKey: "RoleSelection",
+      layout: "auth",
+      noauth: true,
+      props: true,
+    },
+    component: () => import("@/views/RoleSelectionView.vue"),
+  },
+  {
+    path: "/afterregistrationprofileview",
+    name: "AfterRegistrationProfileView",
+    meta: {
+      titleKey: "AfterRegistrationProfileView",
+      layout: "auth",
+      noauth: true,
+      props: true,
+    },
+    component: () => import("@/views/AfterRegistrationProfileView.vue"),
+  },
 ];
 
 export default routes;

@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useStore } from "vuex";
 import SettingMyProfile from "@/components/SettingMyProfile.vue";
 import SettingOrganization from "@/components/SettingOrganization.vue";
-const store = useStore();
+
 const switcher = ref("profile");
 const navElements = [
   {
@@ -12,33 +12,12 @@ const navElements = [
   },
   {
     id: "org",
-    name: "Настройки орг. лица",
+    name: "Настройки юридических данных",
   },
 ];
 </script>
 
 <template>
-  <div class="col-lg-4">
-    <div class="card profile-sidebar me-lg-4">
-      <div class="card-body p-4">
-        <div class="text-center pb-4 border-bottom">
-          <img
-            src="@/assets/images/profile.jpg"
-            alt=""
-            class="avatar-lg img-thumbnail rounded-circle mb-4"
-          />
-          <h5 class="mb-0">
-            {{ store.getters.userData.firstName }}
-          </h5>
-        </div>
-        <!--end profile-->
-
-        <!--end contact-details-->
-      </div>
-      <!--end card-body-->
-    </div>
-    <!--end profile-sidebar-->
-  </div>
   <!--end col-->
   <div class="col-lg-8">
     <div class="card profile-content-page mt-4 mt-lg-0">
@@ -53,7 +32,7 @@ const navElements = [
             :class="{ active: item.id == switcher }"
             @click="switcher = item.id"
           >
-            Настройки профиля
+            {{ item.name }}
           </button>
         </li>
       </ul>
