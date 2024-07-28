@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useStore } from "vuex";
+
 import SettingMyProfile from "@/components/SettingMyProfile.vue";
 import SettingOrganization from "@/components/SettingOrganization.vue";
 

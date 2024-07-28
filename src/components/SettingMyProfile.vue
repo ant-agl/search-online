@@ -24,14 +24,15 @@ const updateSearchValue = (value) => {
   searchValue.value = value;
   debouncedSearch(value);
 };
+
 onMounted(() => {
   const id = store.getters.userData.location;
   if (id) {
     store.dispatch("getCity", { id: id }).then((city) => {
       options.value = [city.data];
       debouncedSearch(city.data.name.slice(0, 2));
-      console.log(city);
-      userData.location = city.data.id;
+
+      userData.value.location = city.data.id;
     });
   }
 });

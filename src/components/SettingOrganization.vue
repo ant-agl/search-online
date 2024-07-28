@@ -29,8 +29,8 @@ onMounted(() => {
     store.dispatch("getCity", { id: id }).then((city) => {
       options.value = [city.data];
       debouncedSearch(city.data.name.slice(0, 2));
-      console.log(city);
-      userData.location = city.data.id;
+      console.log(userData);
+      userData.value.location = city.data.id;
     });
   }
 });
@@ -57,17 +57,6 @@ const v$ = useVuelidate(rules, {
 });
 const onSubmit = () => {
   v$.value.$touch();
-  console.log({
-    name: name.value.trim(),
-    address: address.value.trim(),
-    selectedOption: selectedOption.value,
-    index: index.value,
-    inn: inn.value,
-    email: emailField.value.trim(),
-    phone: phone.value,
-    about: about.value.trim(),
-    newImg: newImg.value,
-  });
 };
 const isFormDirty = computed(() => {
   // !Object.keys({ ...userDataDefault.value, ...userData.value }).map((key) => {
