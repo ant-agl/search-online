@@ -95,6 +95,17 @@ const routes = [
     },
     component: () => import("@/views/AfterRegistrationProfileView.vue"),
   },
+  {
+    path: "/orgafterregistrationprofileview",
+    name: "OrgAfterRegistrationProfileView",
+    meta: {
+      titleKey: "OrgAfterRegistrationProfileView",
+      layout: "auth",
+      noauth: true,
+      props: true,
+    },
+    component: () => import("@/views/OrgAfterRegistrationProfileView.vue"),
+  },
 ];
 
 export default routes;

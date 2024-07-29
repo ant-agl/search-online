@@ -3,7 +3,10 @@
   <ul>
     <router-link to="/roleselection">Выбор после регисрации</router-link>
     <router-link to="/afterregistrationprofileview"
-      >Заполнения Юзера после регистрации</router-link
+      >Заполнение Юзера после регистрации</router-link
+    >
+    <router-link to="/orgafterregistrationprofileview"
+      >Заполнение Организации после регистрации</router-link
     >
     <router-link to="/signup">Зарегистрироваться</router-link>
     <router-link to="/signin">Войти</router-link>
@@ -13,6 +16,8 @@
       >Потверждение восстановление пароля</router-link
     >
     <router-link to="/profile">Профиль</router-link>
+
+    <router-link to="/test">Тестовая страница для проверок</router-link>
   </ul>
 </template>
 

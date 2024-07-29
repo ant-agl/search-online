@@ -3,7 +3,7 @@
     {{ label }}
     <select class="form-control mt-3" :name="name" ref="select"></select>
   </label>
-  <div class="error">
+  <div class="error" v-show="errors">
     <div v-for="error of errors" :key="error.$uid">
       <span v-if="error" class="badge bg-danger">{{ error.$message }}</span>
     </div>
